@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="pt-BR">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>:: Gerenciamento de Estoque ::</title>
+
+    <link href="dist/css/style.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+    <div class="preloader">
+        <div class="lds-ripple">
+            <div class="lds-pos"></div>
+            <div class="lds-pos"></div>
+        </div>
+    </div>
+
+    <div id="main-wrapper">
+
+        <header class="topbar" data-navbarbg="skin5">
+            <nav class="navbar top-navbar navbar-expand-md navbar-dark">
+                <div class="navbar-header" data-logobg="skin5">
+
+                    <a class="nav-toggler waves-effect waves-light d-block d-md-none" href="javascript:void(0)"><i
+                            class="ti-menu ti-close"></i></a>
+
+                    <a class="navbar-brand" href="dashboard.html">
+                        <b class="logo-icon p-l-10">
+                            <img src="Icons/png/caixa.png" alt="Ícone PNG" style="width: 30%;"> ESTOQUE
+                        </b>
+                    </a>
+
+                    <a class="topbartoggler d-block d-md-none waves-effect waves-light" href="javascript:void(0)"
+                        data-toggle="collapse" data-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><i
+                            class="ti-more"></i></a>
+
+                </div>
+
+                <div class="navbar-collapse collapse" id="navbarSupportedContent" data-navbarbg="skin5">
+
+                    <ul class="navbar-nav float-left mr-auto">
+
+                    </ul>
+
+                    <ul class="navbar-nav float-right">
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic" href=""
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img
+                                    src="assets/images/users/1.jpg" alt="user" class="rounded-circle" width="31"></a>
+                            <div class="dropdown-menu dropdown-menu-right user-dd animated">
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="javascript:void(0)"><i
+                                        class="ti-settings m-r-5 m-l-5"></i> Account Setting</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="index.html"><i class="fa fa-power-off m-r-5 m-l-5"></i>
+                                    Logout</a>
+
+                            </div>
+                        </li>
+
+                    </ul>
+                </div>
+            </nav>
+        </header>
+
+        <aside class="left-sidebar" data-sidebarbg="skin5">
+
+            <div class="scroll-sidebar">
+                <nav class="sidebar-nav">
+
+                    <ul id="sidebarnav" class="p-t-30">
+
+                        <li class="sidebar-item">
+                            <a class="sidebar-link waves-effect waves-dark sidebar-link" href="dashboard.html"
+                                aria-expanded="false">
+                                <i class="mdi mdi-view-dashboard"></i>
+                                <span class="hide-menu">Dashboard</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item">
+                            <a class="sidebar-link waves-effect waves-dark sidebar-link" href="clientes.html"
+                                aria-expanded="false">
+                                <i class="mdi mdi-account"></i>
+                                <span class="hide-menu">Clientes</span>
+                            </a>
+                        </li>
+
+                    </ul>
+                </nav>
+            </div>
+        </aside>
+
+        <div class="page-wrapper">
+
+
+            <div class="container-fluid">
+                <h2>Cadastro de Vendas</h2>
+
+                <div id="main-wrapper">
+
+                    <div class="page-wrapper">
+                        <div class="container-fluid">
+
+                            <form action="processar_venda.php" method="POST">
+                                <div class="form-group">
+                                    <label for="nome_cliente">Nome do Cliente:</label>
+                                    <input type="text" class="form-control" id="nome_cliente" name="nome_cliente"
+                                        required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="produto">Produto:</label>
+                                    <input type="text" class="form-control" id="produto" name="produto" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="valor">Valor:</label>
+                                    <input type="number" class="form-control" id="valor" name="valor" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="quantidade">Quantidade:</label>
+                                    <input type="number" class="form-control" id="quantidade" name="quantidade"
+                                        required>
+                                </div>
+                                <button type="button" class="btn btn-primary" onclick="adicionarProduto()">Adicionar
+                                    Produto</button>
+                            </form>
+                            <!-- Fim do Formulário de Cadastro de Vendas (PDV) -->
+
+                            <!-- Lista de Produtos Comprados -->
+                            <div class="mt-4">
+                                <h3>Produtos Comprados</h3>
+                                <ul id="lista_produtos">
+                                    <!-- Os produtos comprados serão exibidos aqui -->
+                                </ul>
+                            </div>
+                            <!-- Fim da Lista de Produtos Comprados -->
+
+                            <!-- Valor Total da Compra -->
+                            <div class="mt-4">
+                                <h3>Valor Total da Compra: <span id="valor_total">R$ 0.00</span></h3>
+                            </div>
+                            <!-- Fim do Valor Total da Compra -->
+
+                            <!-- Botão para Finalizar Compra -->
+                            <div class="mt-4">
+                                <button type="button" class="btn btn-success" onclick="finalizarCompra()">Finalizar
+                                    Compra</button>
+                            </div>
+                            <!-- Fim do Botão para Finalizar Compra -->
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+                    // Variável para armazenar os produtos comprados
+                    var produtosComprados = [];
+
+                    // Função para atualizar o valor total
+                    function atualizarValorTotal() {
+                        var valorTotal = 0;
+                        produtosComprados.forEach(function (produto) {
+                            valorTotal += parseFloat(produto.valor) * parseInt(produto.quantidade);
+                        });
+                        document.getElementById('valor_total').textContent = 'R$ ' + valorTotal.toFixed(2);
+                    }
+
+                    // Função para adicionar produtos comprados à lista
+                    function adicionarProduto() {
+                        var nomeProduto = document.getElementById('produto').value;
+                        var valorProduto = document.getElementById('valor').value;
+                        var quantidadeProduto = document.getElementById('quantidade').value;
+
+                        var produto = {
+                            nome: nomeProduto,
+                            valor: valorProduto,
+                            quantidade: quantidadeProduto
+                        };
+
+                        produtosComprados.push(produto);
+
+                        var listaProdutos = document.getElementById('lista_produtos');
+                        var itemLista = document.createElement('li');
+                        itemLista.textContent = nomeProduto + ' - Valor: R$ ' + valorProduto + ' - Quantidade: ' + quantidadeProduto + ' - Valor Total: R$ ' + (parseFloat(valorProduto) * parseInt(quantidadeProduto)).toFixed(2);
+                        listaProdutos.appendChild(itemLista);
+
+                        // Atualizar o valor total
+                        atualizarValorTotal();
+
+                        // Limpar campos do formulário após adicionar à lista
+                        document.getElementById('produto').value = '';
+                        document.getElementById('valor').value = '';
+                        document.getElementById('quantidade').value = '';
+                    }
+
+                    // Função para finalizar a compra e enviar os dados
+                    function finalizarCompra() {
+                        // Enviar os produtosComprados para o servidor ou realizar qualquer outra ação necessária
+                        console.log(produtosComprados);
+                    }
+                </script>
+            </div>
+
+            <footer class="footer text-center">
+                Todos os direitos reservados para a turma DS 2023.2 ETEAVS ❤.
+            </footer>
+
+        </div>
+    </div>
+
+    <script src="assets/libs/jquery/dist/jquery.min.js"></script>
+    <script src="dist/js/jquery.ui.touch-punch-improved.js"></script>
+    <script src="dist/js/jquery-ui.min.js"></script>
+    <script src="assets/libs/popper.js/dist/umd/popper.min.js"></script>
+    <script src="assets/libs/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="assets/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js"></script>
+    <script src="assets/extra-libs/sparkline/sparkline.js"></script>
+    <script src="dist/js/waves.js"></script>
+    <script src="dist/js/sidebarmenu.js"></script>
+    <script src="dist/js/custom.min.js"></script>
+    <script src="assets/libs/moment/min/moment.min.js"></script>
+
+</body>
+
+</html>
